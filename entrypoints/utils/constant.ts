@@ -5,6 +5,7 @@ export const urls: any = {
     [services.deepL]: "https://api-free.deepl.com/v2/translate",
     [services.deeplx]: "http://localhost:1188/translate",
     [services.openai]: "https://api.openai.com/v1/chat/completions",
+    [services.azureOpenai]: "https://your-resource-name.openai.azure.com/openai/deployments/your-deployment-name/chat/completions?api-version=2024-02-15-preview",
     [services.moonshot]: "https://api.moonshot.cn/v1/chat/completions",
     [services.custom]: "https://localhost:11434/v1/chat/completions",
     [services.tongyi]: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
@@ -22,6 +23,7 @@ export const urls: any = {
     [services.cozecom]: "https://api.coze.com/open_api/v2/chat",
     [services.cozecn]: "https://api.coze.cn/open_api/v2/chat",
     [services.huanYuan]: "https://api.hunyuan.cloud.tencent.com/v1/chat/completions",
+    [services.huanYuanTranslation]: "https://hunyuan.tencentcloudapi.com/",
     [services.doubao]: "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
     [services.siliconCloud]: "https://api.siliconflow.cn/v1/chat/completions",
     [services.openrouter]: "https://openrouter.ai/api/v1/chat/completions",
@@ -56,4 +58,5 @@ export const styles = {
 // 右键菜单ID常量
 export const CONTEXT_MENU_IDS = {
     TRANSLATE_FULL_PAGE: 'fluent-read-translate-full-page',
+    RESTORE_ORIGINAL: 'fluent-read-restore-original',
 }

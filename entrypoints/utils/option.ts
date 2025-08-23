@@ -9,6 +9,7 @@ export const services = {
     tencent: "tencent", // 腾讯云机器翻译
     // 大模型翻译
     openai: "openai",
+    azureOpenai: "azureOpenai", // Azure OpenAI
     gemini: "gemini",
     yiyan: "yiyan",
     tongyi: "tongyi",
@@ -27,18 +28,21 @@ export const services = {
     cozecom: "cozecom", // coze 支持机器人不支持模型
     cozecn: "cozecn",
     huanYuan: "huanYuan", // 腾讯混元
+    huanYuanTranslation: "huanYuanTranslation", // 腾讯混元翻译大模型
     doubao: "doubao", // 字节豆包
     siliconCloud: "siliconCloud", // 硅流
     openrouter: "openrouter", // openrouter
     grok: "grok", // X.AI 的 Grok
     newapi: "newapi", // New API 接口
+    chromeTranslator: "chromeTranslator", // Chrome 内置翻译 API
 };
 
 export const servicesType = {
     // 阵营划分
-    machine: new Set([services.microsoft, services.deepL, services.deeplx, services.google, services.xiaoniu, services.youdao, services.tencent,]),
+    machine: new Set([services.microsoft, services.deepL, services.deeplx, services.google, services.xiaoniu, services.youdao, services.tencent, services.chromeTranslator,]),
     AI: new Set([
         services.openai,
+        services.azureOpenai,
         services.gemini,
         services.yiyan,
         services.tongyi,
@@ -55,6 +59,7 @@ export const servicesType = {
         services.cozecom,
         services.cozecn,
         services.huanYuan,
+        services.huanYuanTranslation,
         services.doubao,
         services.siliconCloud,
         services.openrouter,
@@ -64,6 +69,7 @@ export const servicesType = {
     // 需要 token
     useToken: new Set([
         services.openai,
+        services.azureOpenai,
         services.gemini,
         services.tongyi,
         services.zhipu,
@@ -92,6 +98,7 @@ export const servicesType = {
     // 需要 model
     useModel: new Set([
         services.openai,
+        services.azureOpenai,
         services.gemini,
         services.yiyan,
         services.tongyi,
@@ -107,6 +114,7 @@ export const servicesType = {
         services.jieyue,
         services.groq,
         services.huanYuan,
+        services.huanYuanTranslation,
         services.doubao,
         services.siliconCloud,
         services.openrouter,
@@ -116,6 +124,7 @@ export const servicesType = {
     // 支持代理
     useProxy: new Set([
         services.openai,
+        services.azureOpenai,
         services.gemini,
         services.claude,
         services.google,
@@ -134,6 +143,7 @@ export const servicesType = {
         services.cozecom,
         services.cozecn,
         services.huanYuan,
+        services.huanYuanTranslation,
         services.doubao,
         services.siliconCloud,
         services.openrouter,
@@ -144,6 +154,7 @@ export const servicesType = {
         services.custom,
         services.deeplx,
         services.newapi,
+        services.azureOpenai,
     ]),
 
     isMachine: (service: string) => servicesType.machine.has(service),
@@ -156,13 +167,15 @@ export const servicesType = {
     isUseAkSk: (service: string) => service === services.yiyan,
     isCoze: (service: string) => service === services.cozecom || service === services.cozecn,
     isYoudao: (service: string) => service === services.youdao,
-    isTencent: (service: string) => service === services.tencent,
+    isTencent: (service: string) => service === services.tencent || service === services.huanYuanTranslation,
+    isAzureOpenai: (service: string) => service === services.azureOpenai,
     isUseCustomUrl: (service: string) => servicesType.useCustomUrl.has(service),
 };
 
 export const customModelString = "自定义模型";
 export const models = new Map<string, Array<string>>([
     [services.openai, ["gpt-5-nano", "gpt-5-mini", "gpt5", "gpt-5-chat-latest", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini", "gpt-4o", "o3", "o3-mini", customModelString]],
+    [services.azureOpenai, ["gpt-5-nano", "gpt-5-mini", "gpt5", "gpt-5-chat-latest", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini", "gpt-4o", "o3", "o3-mini", customModelString]],
     [services.gemini, ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro", customModelString]],
     [services.yiyan, ["ERNIE-Bot 4.0", "ERNIE-Bot", "ERNIE-Speed-8K"]],
     [services.tongyi, ["qwen-long", "qwen-turbo", "qwen-plus", "qwen3-8b", "qwen-mt-plus", "qwen-mt-turbo", customModelString]],
@@ -177,6 +190,7 @@ export const models = new Map<string, Array<string>>([
     [services.minimax, ["chatcompletion_v2"]],
     [services.jieyue, ["step-1-8k", customModelString]],
     [services.huanYuan, ["hunyuan-turbos-latest", "hunyuan-t1-latest", "hunyuan-a13b", "hunyuan-lite", "hunyuan-standard", customModelString]],
+    [services.huanYuanTranslation, ["hunyuan-translation", "hunyuan-translation-lite", customModelString]],
     [services.newapi, ["gemini-2.5-flash-lite", "gemini-2.0-flash", "gpt-5-nano", "gpt-5-mini", "gpt5", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini", customModelString]],
     [services.grok, ["grok-4-0709","grok-3-mini", customModelString]],
     [services.doubao, [customModelString]],
@@ -247,19 +261,22 @@ export const options = {
         {value: services.deeplx, label: "DeepLX"},
         {value: services.xiaoniu, label: "小牛翻译"},
         {value: services.youdao, label: "有道翻译"},
-        {value: services.tencent, label: "腾讯云机器翻译"},
+        {value: services.tencent, label: "腾讯云翻译"},
         // 大模型翻译
         {value: "ai", label: "AI翻译", disabled: true},
-        {value: services.deepseek, label: "DeepSeek⭐️"},
-        {value: services.siliconCloud, label: "硅基流动-SiliconFlow⭐️"},
+        {value: services.chromeTranslator, label: "Chrome内置AI翻译⭐"},
+        {value: services.siliconCloud, label: "硅基流动⭐️"},
         {value: services.huanYuan, label: "腾讯混元⭐"},
         {value: services.newapi, label: "New API"},
+        {value: services.deepseek, label: "DeepSeek️"},
+        {value: services.openai, label: "OpenAI"},
+        {value: services.azureOpenai, label: "Azure OpenAI"},
+        {value: services.huanYuanTranslation, label: "腾讯混元翻译"},
+        {value: services.tongyi, label: "阿里通义"},
+        {value: services.doubao, label: "字节豆包"},
         {value: services.grok, label: "Grok (X.AI)"},
         {value: services.openrouter, label: "OpenRouter"},
         {value: services.groq, label: "Groq"},
-        {value: services.doubao, label: "字节豆包"},
-        {value: services.tongyi, label: "阿里通义"},
-        {value: services.openai, label: "OpenAI"},
         {value: services.moonshot, label: "Kimi"},
         {value: services.zhipu, label: "智谱清言"},
         {value: services.baichuan, label: "百川智能"},
@@ -272,7 +289,7 @@ export const options = {
         {value: services.claude, label: "Claude"},
         {value: services.gemini, label: "Gemini"},
         {value: services.yiyan, label: "文心一言"},
-        {value: services.custom, label: "⭐自定义⭐️"},
+        {value: services.custom, label: "自定义接口⭐️"},
     ],
     display: [
         {value: 0, label: "仅译文模式"},
@@ -349,6 +366,26 @@ export const options = {
         {value: "light", label: "亮色主题"},
         {value: "dark", label: "暗色主题"},
     ],
+    // 输入框翻译目标语言选项
+    inputBoxTranslationTarget: [
+        {value: "zh-Hans", label: "中文"},
+        {value: "en", label: "英语"},
+        {value: "ja", label: "日语"},
+        {value: "ko", label: "韩语"},
+        {value: "fr", label: "法语"},
+        {value: "ru", label: "俄语"},
+        {value: "es", label: "西班牙语"},
+        {value: "de", label: "德语"},
+        {value: "pt", label: "葡萄牙语"},
+        {value: "it", label: "意大利语"},
+    ],
+    // 输入框翻译触发方式选项
+    inputBoxTranslationTrigger: [
+        {value: "disabled", label: "关闭"},
+        {value: "triple_space", label: "连按三下空格"},
+        {value: "triple_equal", label: "连按三下等号(=)"},
+        {value: "triple_dash", label: "连按三下短横线(-)"},
+    ],
 };
 
 export const defaultOption = {
@@ -369,5 +406,7 @@ export const defaultOption = {
     count: 0,
     useCache: true,
     floatingBallHotkey: "Alt+T", // 默认悬浮球快捷键
+    inputBoxTranslationTrigger: "disabled", // 默认关闭输入框翻译
+    inputBoxTranslationTarget: "en", // 默认翻译成英文
 };
 
